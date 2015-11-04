@@ -1,0 +1,8 @@
+# fucking pycache
+*.pyc
+*.db
+
+# Ignored for privacy:
+
+db/sql/private/
+transaction logs/
