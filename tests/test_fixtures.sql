@@ -1,0 +1,10 @@
+INSERT INTO "account_codes" VALUES(100, "BANK ACCOUNT 1");
+INSERT INTO "account_codes" VALUES(200, "VISA");
+INSERT INTO "account_codes" VALUES(500, "EXPENSE ACCT 1");
+
+INSERT INTO "tx" VALUES(NULL, '2015-01-01',100,'First deposit',500.0, NULL);
+INSERT INTO "tx" VALUES(NULL, '2015-01-01',100,'Second deposit',1000.0, NULL);
+INSERT INTO "tx" VALUES(NULL, '2015-01-02',100,'First withdrawal',-200.0, NULL);
+INSERT INTO "tx" VALUES(NULL, '2015-01-02',100,'Third deposit',300.0, NULL);
+INSERT INTO "tx" VALUES(NULL, '2014-01-02',100,'Historical deposit!',20.0, NULL);
+

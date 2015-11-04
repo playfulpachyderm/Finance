@@ -2,7 +2,10 @@ import os
 import sqlite3
 from datetime import date
 
-con = sqlite3.connect("finances.db")
+env = os.environ.setdefault("env_type", "prod")
+
+db = {"prod": "finances.db", "test": ":memory:"}[env]
+con = sqlite3.connect(db)
 c = con.cursor()
 
 def create_transaction(date, account, name, amount, antitransaction = None):
