@@ -4,6 +4,10 @@ from db.queries import c
 
 # ********** account_codes tests *********
 
+def test_account_codes_insert_trigger_rejects_nonmeta_codes():
+	q = "insert into account_codes (code, name) values (1, \"an invalid account\")"
+	assert_raises(IntegrityError, c.execute, q)
+
 def test_account_codes_rejects_duplicate_code():
 	q = "insert into account_codes (code, name) values (100, \"a duplicate account\")"
 	assert_raises(IntegrityError, c.execute, q)
