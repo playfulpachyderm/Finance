@@ -86,3 +86,14 @@ def get_current_balance(account, d = None):
 		return result[0]
 	else:
 		return 0
+
+def list_accounts(acct_type):
+	q = """
+	    select acct.code, acct.name
+	      from account_codes acct
+	      join account_metacodes meta
+	        on acct.code like meta.code
+	     where UPPER(meta.type) = UPPER(?)
+	"""
+	c.execute(q, (acct_type, ))
+	return c.fetchall()
