@@ -8,4 +8,5 @@ TODO.txt
 # Ignored for privacy:
 
 db/sql/private/
+db/import_transactions.py
 transaction logs/
