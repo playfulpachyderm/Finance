@@ -18,7 +18,7 @@ INSERT INTO "account_metacodes" VALUES('11_', 'LONG TERM ASSETS');
 
 INSERT INTO "account_metacodes" VALUES('2__', 'LIABILITIES');
 INSERT INTO "account_metacodes" VALUES('20_', 'CURRENT LIABILITIES');
-INSERT INTO "account_metacodes" VALUES('21_', 'LONG TERM  LIABILITIES');
+INSERT INTO "account_metacodes" VALUES('21_', 'LONG TERM LIABILITIES');
 
 INSERT INTO "account_metacodes" VALUES('4__', 'REVENUE');
 

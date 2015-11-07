@@ -1,22 +1,22 @@
 import os
 import sqlite3
-from datetime import date
+from utils.date_utils import date_or_today
 
-ASSETS = "ASSETS"
-CURRENT_ASSETS = "CURRENT ASSETS"
-LONG_TERM_ASSETS = "LONG TERM ASSETS"
+ASSETS = "Assets"
+CURRENT_ASSETS = "Current assets"
+LONG_TERM_ASSETS = "Long term assets"
 
-LIABILITIES = "LIABILITIES"
-CURRENT_LIABILITIES = "CURRENT LIABILITIES"
-LONG_TERM_LIABILITIES = "LONG TERM LIABILITIES"
+LIABILITIES = "Liabilities"
+CURRENT_LIABILITIES = "Current liabilities"
+LONG_TERM_LIABILITIES = "Long term liabilities"
 
-REVENUE = "REVENUE"
+REVENUE = "Revenue"
 
-EXPENSES = "%EXPENSES%"
-LEGIT_EXPENSES = "LEGITIMATE EXPENSES"
-OPTIONAL_EXPENSES = "OPTIONAL EXPENSES"
-RETARDED_EXPENSES = "RETARDED EXPENSES"
-MISC_EXPENSES = "MISC EXPENSES"
+EXPENSES = "%Expenses%"
+LEGIT_EXPENSES = "Legitimate expenses"
+OPT_EXPENSES = "Optional expenses"
+RETARDED_EXPENSES = "Retarded expenses"
+MISC_EXPENSES = "Misc expenses"
 
 env = os.environ.setdefault("env_type", "prod")
 
@@ -39,9 +39,10 @@ def is_account_type(account, *types):
 
 
 def create_transaction(date, account, name, amount, antitransaction = None):
-	c.execute("insert into tx (date, account, name, amount, antitransaction) \
-				   values (?, ?, ?, ?, ?)",
-						  (date, account, name, amount, antitransaction))
+	q = """insert into tx (date, account, name, amount, antitransaction) \
+	               values (?, ?, ?, ?, ?)
+	"""
+	c.execute(q, (date, account, name, amount, antitransaction))
 
 	# return new row's rowid
 	c.execute("select last_insert_rowid() from tx")
@@ -65,20 +66,23 @@ def get_current_balance(account, d = None):
 	# (defaults to today if no date is specified)
 
 	q = """
-		select round(sum(t2.amount), 2)
-		  from tx t1
+	    select round(sum(t2.amount), 2)
+	      from tx t1
 	 left join tx t2
-			on (t1.date > t2.date or (t1.date = t2.date and t1.rowid >= t2.rowid))
-		   and t1.account = t2.account
-		 where t1.account = ?
-		   and t1.date <= ?
+	        on (t1.date > t2.date or (t1.date = t2.date and t1.rowid >= t2.rowid))
+	       and t1.account = t2.account
+	     where t1.account = ?
+	       and t1.date <= ?
 	  group by t1.rowid
 	  order by t1.date desc,
-			   t1.rowid desc
+	           t1.rowid desc
 	"""
 
-	if not d:
-		d = date.today().strftime("%Y-%m-%d")
+	d = date_or_today(d)
 
 	c.execute(q, (account, d))
-	return c.fetchone()[0]
+	result = c.fetchone()
+	if result != None:
+		return result[0]
+	else:
+		return 0
