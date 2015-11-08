@@ -61,31 +61,37 @@ def create_transaction_with_mirror(date, account1, account2, name, amount):
 	c.execute("update tx set antitransaction = ? where rowid = ?", (rowid2, rowid1, ))
 	return rowid1, rowid2
 
-def get_current_balance(account, d = None):
-	# returns the balance in the specified account at the end of the specified day
-	# (defaults to today if no date is specified)
+def get_balance_change(account, d1, d2):
+	# d1 and d2 must be properly formatted and not None
+	# Note that the date range is from d1 to d2, so d2 > d1
 
 	q = """
 	    select round(sum(t2.amount), 2)
 	      from tx t1
 	 left join tx t2
-	        on (t1.date > t2.date or (t1.date = t2.date and t1.rowid >= t2.rowid))
+	        on ((t1.date > t2.date and t2.date >= ?) or (t1.date = t2.date and t1.rowid >= t2.rowid))
 	       and t1.account = t2.account
 	     where t1.account = ?
 	       and t1.date <= ?
+	       and t1.date >= ?
 	  group by t1.rowid
 	  order by t1.date desc,
 	           t1.rowid desc
 	"""
 
-	d = date_or_today(d)
-
-	c.execute(q, (account, d))
+	c.execute(q, (d1, account, d2, d1))
 	result = c.fetchone()
 	if result != None:
 		return result[0]
 	else:
 		return 0
+
+def get_current_balance(account, d = None):
+	# returns the balance in the specified account at the end of the specified day
+	# (defaults to today if no date is specified)
+
+	d = date_or_today(d)
+	return get_balance_change(account, "0000-00-00", d)  # Change since beginning of time
 
 def list_accounts(acct_type):
 	q = """

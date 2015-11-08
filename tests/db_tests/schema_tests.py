@@ -38,8 +38,8 @@ def test_invalid_antitransaction_fails():
 
 def test_create_valid_tx():
 	q1 = "insert into tx (date, account, name, amount, antitransaction) \
-				  values ('2015-01-01', 100, 'valid tx', 100, 1)"
-	q2 = "select name from tx where account = 100 and amount = 100"
+				  values ('2015-01-01', 110, 'valid tx', 100, 1)"
+	q2 = "select name from tx where account = 110 and amount = 100"
 	c.execute(q1)
 	c.execute(q2)
 	assert_equal(c.fetchone(), ("valid tx", ))

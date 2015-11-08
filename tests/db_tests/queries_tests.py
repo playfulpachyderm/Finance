@@ -42,10 +42,22 @@ def test_create_transaction_with_mirror_correctly_creates_antitransactions():
 	assert_equal(c.fetchone(), (-38, ))
 
 def test_get_current_balance():
-	assert_equal(get_current_balance(100), 1620)
-	assert_equal(get_current_balance(100, '2015-01-01'), 1520)
-	assert_equal(get_current_balance(100, '2015-01-03'), 1620)
-	assert_equal(get_current_balance(100, '2014-06-03'), 20)
+	assert_equal(get_current_balance(100), 1800)
+
+def test_get_current_balance_with_specified_date():
+	assert_equal(get_current_balance(100, '2000-01-01'), 0)
+	assert_equal(get_current_balance(100, '2014-06-03'), 200)
+	assert_equal(get_current_balance(100, '2015-01-01'), 1700)
+	assert_equal(get_current_balance(100, '2015-01-03'), 1800)
+
+def test_get_balance_change():
+	assert_equal(get_balance_change(100, '2014-01-01', '2014-06-01'), 180)
+	assert_equal(get_balance_change(100, '2014-01-02', '2014-06-01'), 80)
+	assert_equal(get_balance_change(100, '2014-01-01', '2014-06-02'), 200)
+	assert_equal(get_balance_change(100, '2014-06-01', '2015-06-01'), 1620)
+
+def test_get_balance_change_with_negative_date_range_gives_zero():
+	assert_equal(get_balance_change(100, '2014-06-01', '2014-01-01'), 0)
 
 def test_list_accounts():
 	l = list_accounts(ASSETS)
